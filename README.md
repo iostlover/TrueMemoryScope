@@ -2,24 +2,40 @@
 
 **Unmask Hidden Physical RAM Usage Concealed by Windows Task Manager.**
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Platform: Windows](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011-0078D6.svg)](https://microsoft.com/windows)
+[![Language: PowerShell](https://img.shields.io/badge/Language-PowerShell%20%2F%20WPF-5391FE.svg)](https://github.com/PowerShell/PowerShell)
+
 A lightweight, standalone diagnostic GUI tool for Windows that reveals the **true physical memory consumption (Working Set)** of games and applications. Zero installation, zero external dependencies.
 
 [English README](README.md) | [日本語ドキュメント (Japanese)](README_JA.md)
 
 ---
 
+## 📸 Real Comparison: Task Manager vs TrueMemoryScope
+
+Look at this real comparison while running an Unreal Engine game:
+
+![TrueMemoryScope vs Windows Task Manager](assets/preview.png)
+
+- **Windows Task Manager reports:** `Wardogs` is using only **~7.2 GB**
+- **TrueMemoryScope reveals:** `Wardogs` is actually holding **39.91 GB** of physical RAM!
+- **Hidden Memory:** **25.82 GB** of mapped game assets were completely invisible in Task Manager!
+
+---
+
 ## 🧐 The Problem: Why Does Task Manager Lie?
 
-Have you ever looked at Task Manager and noticed:
-> *"My system is using 50 GB out of 64 GB RAM (78%), but when I sum up the processes in Task Manager, they barely add up to 10 GB. Where is all my RAM going?!"*
+Have you ever looked at Task Manager and wondered:
+> *"My system is using 55 GB out of 64 GB RAM (87%), but when I look at the processes in Task Manager, they barely add up to 15 GB. Where is all my RAM going?!"*
 
 ### The Technical Trap
 In Windows Task Manager, the default **Memory** column in the **Processes** tab only shows **Private Working Set** (memory exclusively owned by a process that cannot be shared).
 
-However, modern game engines (such as **Unreal Engine**) and media software load huge asset packages (textures, 3D models, sound files) using **Memory Mapped Files**.
+However, modern game engines (such as **Unreal Engine**) and heavy software load huge asset packages (textures, 3D models, sound files) using **Memory Mapped Files**.
 - Windows classifies Memory Mapped Files as **"Shareable"**.
 - Because they are shareable, **Task Manager EXCLUDES them from the process list memory column!**
-- **Real Example:** A game process may actively hold **34.8 GB** of physical RAM in hardware, yet Task Manager only shows **7.2 GB** in the process list. The remaining **27.6 GB** is completely invisible!
+- **Real Example:** A game process may actively hold **39.9 GB** of physical RAM in hardware, yet Task Manager only shows **7.2 GB** in the process list. The remaining **25.8 GB** is completely invisible!
 
 ---
 
@@ -63,6 +79,8 @@ Simply double-click **`Launch_JA.bat`** (or `TrueMemoryScope_JA/Launch_JA.bat`).
 
 ```text
 TrueMemoryScope/
+├── assets/
+│   └── preview.png           # Comparison screenshot
 ├── Launch_EN.bat             # Root launcher (English)
 ├── Launch_JA.bat             # Root launcher (Japanese)
 ├── README.md                 # English documentation
