@@ -1,0 +1,18 @@
+# Windows thumbnail cache and desktop.ini
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+Desktop.ini
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Temporary logs and dumps
+*.log
+*.tmp
+*.dmp
+*.lnk

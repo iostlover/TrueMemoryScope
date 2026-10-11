@@ -1,0 +1,209 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TrueMemoryScope - Real Memory Diagnostics" Height="800" Width="1100"
+        WindowStartupLocation="CenterScreen"
+        Background="#181825" Foreground="#CDD6F4" FontFamily="Segoe UI, Yu Gothic UI">
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#CDD6F4"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#313244"/>
+            <Setter Property="Foreground" Value="#CDD6F4"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#45475A"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#45475A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#1E1E2E" CornerRadius="8" Padding="16,14" Margin="0,0,0,14" BorderBrush="#313244" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="🔍 TrueMemoryScope" FontSize="22" FontWeight="Bold" Foreground="#89B4FA"/>
+                        <TextBlock Text=" - Unmask Hidden Physical RAM Usage (Working Set)" FontSize="13" Foreground="#A6ADC8" VerticalAlignment="Bottom" Margin="10,0,0,3"/>
+                    </StackPanel>
+                    <TextBlock Text="Task Manager's process list only counts 'Private Memory', concealing huge memory-mapped files (games, media, etc.)." FontSize="12" Foreground="#BAC2DE" Margin="0,5,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Name="BtnExplain" Content="💡 Why do numbers differ?" Margin="0,0,10,0" Background="#313244" Foreground="#F9E2AF" FontWeight="SemiBold"/>
+                    <Button Name="BtnRefresh" Content="🔄 Refresh (F5)" Margin="0,0,0,0" Background="#89B4FA" Foreground="#11111B" FontWeight="Bold"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Summary Metric Cards -->
+        <Grid Grid.Row="1" Margin="0,0,0,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Physical RAM In-Use -->
+            <Border Grid.Column="0" Background="#1E1E2E" CornerRadius="8" Padding="14,12" Margin="0,0,10,0" BorderBrush="#313244" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Physical RAM (In-Use)" FontSize="12" Foreground="#A6ADC8"/>
+                    <TextBlock Name="TxtRamUsage" Text="Calculating..." FontSize="22" FontWeight="Bold" Foreground="#F38BA8" Margin="0,4,0,6"/>
+                    <ProgressBar Name="PbRamUsage" Height="10" Background="#313244" Foreground="#F38BA8" BorderThickness="0" Margin="0,0,0,6"/>
+                    <TextBlock Name="TxtRamDetails" Text="Total: 64 GB | Available: -- GB" FontSize="11" Foreground="#BAC2DE"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Committed Memory -->
+            <Border Grid.Column="1" Background="#1E1E2E" CornerRadius="8" Padding="14,12" Margin="0,0,10,0" BorderBrush="#313244" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Committed (Virtual RAM)" FontSize="12" Foreground="#A6ADC8"/>
+                    <TextBlock Name="TxtCommitUsage" Text="-- / -- GB" FontSize="18" FontWeight="Bold" Foreground="#FAB387" Margin="0,4,0,4"/>
+                    <TextBlock Text="Total virtual memory allocated" FontSize="11" Foreground="#BAC2DE"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Standby / Cache -->
+            <Border Grid.Column="2" Background="#1E1E2E" CornerRadius="8" Padding="14,12" Margin="0,0,10,0" BorderBrush="#313244" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Standby / System Cache" FontSize="12" Foreground="#A6ADC8"/>
+                    <TextBlock Name="TxtCacheUsage" Text="-- GB" FontSize="18" FontWeight="Bold" Foreground="#A6E3A1" Margin="0,4,0,4"/>
+                    <TextBlock Text="Freed instantly when requested" FontSize="11" Foreground="#BAC2DE"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Kernel Pools -->
+            <Border Grid.Column="3" Background="#1E1E2E" CornerRadius="8" Padding="14,12" BorderBrush="#313244" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Kernel Pools (NPaged / Paged)" FontSize="12" Foreground="#A6ADC8"/>
+                    <TextBlock Name="TxtPoolUsage" Text="-- GB / -- GB" FontSize="18" FontWeight="Bold" Foreground="#CBA6F7" Margin="0,4,0,4"/>
+                    <TextBlock Text="Device drivers &amp; OS memory" FontSize="11" Foreground="#BAC2DE"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Process DataGrid -->
+        <Border Grid.Row="2" Background="#1E1E2E" CornerRadius="8" Padding="14" BorderBrush="#313244" BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Filter Controls -->
+                <Grid Grid.Row="0" Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="220"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Filter process: " VerticalAlignment="Center" Margin="0,0,8,0" FontSize="12"/>
+                    <TextBox Name="TxtFilter" Grid.Column="1" Background="#313244" Foreground="#CDD6F4" BorderBrush="#45475A" Padding="6,4" FontSize="12"/>
+                    <CheckBox Name="ChkOnlyHidden" Grid.Column="2" Content="⚠️ Show only processes with Hidden Memory &gt;= 1 GB" VerticalAlignment="Center" Margin="16,0,0,0" Foreground="#F9E2AF" FontSize="12"/>
+                    <Button Name="BtnKill" Grid.Column="4" Content="Kill Selected Process" Background="#F38BA8" Foreground="#11111B" FontWeight="Bold"/>
+                </Grid>
+
+                <DataGrid Name="GridProcesses" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False"
+                          IsReadOnly="True" Background="#181825" Foreground="#CDD6F4" RowBackground="#181825" AlternatingRowBackground="#1E1E2E"
+                          BorderBrush="#313244" BorderThickness="1" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#313244"
+                          HeadersVisibility="Column" SelectionMode="Single">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#313244"/>
+                            <Setter Property="Foreground" Value="#CDD6F4"/>
+                            <Setter Property="Padding" Value="8,6"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                            <Setter Property="BorderBrush" Value="#45475A"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Process Name" Binding="{Binding Name}" Width="190"/>
+                        <DataGridTextColumn Header="PID" Binding="{Binding Id}" Width="65">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="Margin" Value="0,0,8,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="🔥 Real RAM Usage (WS)" Binding="{Binding WorkingSetStr}" SortMemberPath="WorkingSet64" Width="170">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="Margin" Value="0,0,8,0"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Task Manager (Private)" Binding="{Binding PrivateMemStr}" SortMemberPath="PrivateMem64" Width="165">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="Margin" Value="0,0,8,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="🚨 Hidden Memory (Diff)" Binding="{Binding HiddenMemStr}" SortMemberPath="HiddenMB" Width="150">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="Margin" Value="0,0,8,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Virtual / Commit" Binding="{Binding VirtualMemStr}" SortMemberPath="VirtualMem64" Width="135">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="Margin" Value="0,0,8,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Executable Path" Binding="{Binding Path}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <!-- Status Bar -->
+        <Grid Grid.Row="3" Margin="4,10,4,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Name="TxtStatus" Text="Ready" FontSize="12" Foreground="#A6ADC8"/>
+            <TextBlock Name="TxtUpdateTime" Grid.Column="1" Text="Last updated: --:--:--" FontSize="12" Foreground="#A6ADC8"/>
+        </Grid>
+    </Grid>
+</Window>
